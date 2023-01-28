@@ -44,11 +44,13 @@ def get_arrival_times_for_route(route):
 
     return n0,n1,s0,s1
 
+F_BITMAP = displayio.OnDiskBitmap(open(BACKGROUND_IMAGE_F, 'rb'))
+G_BITMAP = displayio.OnDiskBitmap(open(BACKGROUND_IMAGE_G, 'rb'))
 def get_bitmap_for_route(route):
     if route == 'F':
-        return displayio.OnDiskBitmap(open(BACKGROUND_IMAGE_F, 'rb'))
+        return F_BITMAP
     else:
-        return displayio.OnDiskBitmap(open(BACKGROUND_IMAGE_G, 'rb'))
+        return G_BITMAP
 
 def update_text(n0, n1, s0, s1):
     text_lines[2].text = "%s,%s m" % (n0,n1)
@@ -65,7 +67,7 @@ network = Network(status_neopixel=NEOPIXEL, debug=False)
 
 # --- Drawing setup ---
 group = displayio.Group()
-bitmap = displayio.OnDiskBitmap(open(BACKGROUND_IMAGE_F, 'rb'))
+bitmap = F_BITMAP
 colors = [0x444444, 0xDD8000]  # [dim white, gold]
 
 font = bitmap_font.load_font("fonts/6x10.bdf")
