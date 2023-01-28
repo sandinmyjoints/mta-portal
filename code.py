@@ -14,7 +14,8 @@ DATA_LOCATION = ["data"]
 UPDATE_DELAY = 15
 SYNC_TIME_DELAY = 30
 MINIMUM_MINUTES_DISPLAY = 9
-BACKGROUND_IMAGE = 'g-dashboard.bmp'
+BACKGROUND_IMAGE_F = 'f-dashboard.bmp'
+BACKGROUND_IMAGE_G = 'g-dashboard.bmp'
 ERROR_RESET_THRESHOLD = 3
 
 def get_arrival_in_minutes_from_now(now, date_str):
@@ -43,10 +44,19 @@ def get_arrival_times_for_route(route):
 
     return n0,n1,s0,s1
 
+def get_bitmap_for_route(route):
+    if route == 'F':
+        return displayio.OnDiskBitmap(open(BACKGROUND_IMAGE_F, 'rb'))
+    else:
+        return displayio.OnDiskBitmap(open(BACKGROUND_IMAGE_G, 'rb'))
+
 def update_text(n0, n1, s0, s1):
     text_lines[2].text = "%s,%s m" % (n0,n1)
     text_lines[4].text = "%s,%s m" % (s0,s1)
-    display.show(group)
+
+def update_bitmap(route):
+    bitmap = get_bitmap_for_route(route)
+    text_lines[0] = displayio.TileGrid(bitmap, pixel_shader=getattr(bitmap, 'pixel_shader', displayio.ColorConverter())),
 
 # --- Display setup ---
 matrix = Matrix()
@@ -55,7 +65,7 @@ network = Network(status_neopixel=NEOPIXEL, debug=False)
 
 # --- Drawing setup ---
 group = displayio.Group()
-bitmap = displayio.OnDiskBitmap(open(BACKGROUND_IMAGE, 'rb'))
+bitmap = displayio.OnDiskBitmap(open(BACKGROUND_IMAGE_F, 'rb'))
 colors = [0x444444, 0xDD8000]  # [dim white, gold]
 
 font = bitmap_font.load_font("fonts/6x10.bdf")
@@ -84,8 +94,10 @@ while True:
             current_route = 'F'
         else:
             current_route = 'G'
+        update_bitmap(current_route)
         arrivals = get_arrival_times_for_route(current_route)
         update_text(*arrivals)
+        display.show(group)
     except (ValueError, RuntimeError) as e:
         print("Some error occured, retrying! -", e)
         error_counter = error_counter + 1
