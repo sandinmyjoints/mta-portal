@@ -21,11 +21,11 @@ def get_arrival_in_minutes_from_now(now, date_str):
     train_date = datetime.fromisoformat(date_str).replace(tzinfo=None) # Remove tzinfo to be able to diff dates
     return round((train_date-now).total_seconds()/60.0)
 
-def get_arrival_times():
+def get_arrival_times_for_route(route):
     stop_trains =  network.fetch_data(DATA_SOURCE, json_path=(DATA_LOCATION,))
     stop_data = stop_trains[0]
-    nortbound_trains = [x['time'] for x in stop_data['N']]
-    southbound_trains = [x['time'] for x in stop_data['S']]
+    nortbound_trains = [x['time'] for x in stop_data['N'] if x['route'] == route]
+    southbound_trains = [x['time'] for x in stop_data['S'] if x['route'] == route]
 
     now = datetime.now()
     print("Now: ", now)
@@ -72,13 +72,18 @@ display.show(group)
 
 error_counter = 0
 last_time_sync = None
+current_route = 'G'
 while True:
     try:
         if last_time_sync is None or time.monotonic() > last_time_sync + SYNC_TIME_DELAY:
             # Sync clock to minimize time drift
             network.get_local_time()
             last_time_sync = time.monotonic()
-        arrivals = get_arrival_times()
+        if current_route == 'G':
+            current_route = 'F'
+        else:
+            current_route = 'G'
+        arrivals = get_arrival_times_for_route(route)
         update_text(*arrivals)
     except (ValueError, RuntimeError) as e:
         print("Some error occured, retrying! -", e)
