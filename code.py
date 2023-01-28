@@ -73,6 +73,7 @@ display.show(group)
 error_counter = 0
 last_time_sync = None
 current_route = 'G'
+
 while True:
     try:
         if last_time_sync is None or time.monotonic() > last_time_sync + SYNC_TIME_DELAY:
