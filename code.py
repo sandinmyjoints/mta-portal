@@ -83,7 +83,7 @@ while True:
             current_route = 'F'
         else:
             current_route = 'G'
-        arrivals = get_arrival_times_for_route(route)
+        arrivals = get_arrival_times_for_route(current_route)
         update_text(*arrivals)
     except (ValueError, RuntimeError) as e:
         print("Some error occured, retrying! -", e)
