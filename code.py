@@ -58,7 +58,7 @@ def update_text(n0, n1, s0, s1):
 
 def update_bitmap(route):
     bitmap = get_bitmap_for_route(route)
-    text_lines[0] = displayio.TileGrid(bitmap, pixel_shader=getattr(bitmap, 'pixel_shader', displayio.ColorConverter())),
+    group[0] = displayio.TileGrid(bitmap, pixel_shader=getattr(bitmap, 'pixel_shader', displayio.ColorConverter())),
 
 # --- Display setup ---
 matrix = Matrix()
