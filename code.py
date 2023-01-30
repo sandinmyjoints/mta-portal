@@ -102,8 +102,8 @@ while True:
             current_route = 'F'
         else:
             current_route = 'G'
-        update_bitmap(current_route)
         arrivals = get_arrival_times_for_route(current_route)
+        update_bitmap(current_route)
         update_text(route=current_route, *arrivals)
         display.show(group)
     except (ValueError, RuntimeError) as e:
