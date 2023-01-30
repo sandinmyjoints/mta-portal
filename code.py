@@ -52,7 +52,13 @@ def get_bitmap_for_route(route):
     else:
         return G_BITMAP
 
-def update_text(n0, n1, s0, s1):
+def update_text(route, n0, n1, s0, s1):
+    if route == 'G':
+        text_lines[1].text = "name of northbound G destination"
+        text_lines[3].text = "name of southbound G destination"
+    else:
+        text_lines[1].text = "name of northbound F destination"
+        text_lines[3].text = "name of southbound F destination"
     text_lines[2].text = "%s,%s m" % (n0,n1)
     text_lines[4].text = "%s,%s m" % (s0,s1)
 
@@ -98,7 +104,7 @@ while True:
             current_route = 'G'
         update_bitmap(current_route)
         arrivals = get_arrival_times_for_route(current_route)
-        update_text(*arrivals)
+        update_text(route=current_route, *arrivals)
         display.show(group)
     except (ValueError, RuntimeError) as e:
         print("Some error occured, retrying! -", e)
